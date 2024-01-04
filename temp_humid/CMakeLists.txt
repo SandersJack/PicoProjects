@@ -6,9 +6,11 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 pico_sdk_init()
 
-add_executable(tempH
-temp_humid.c
-)
+file(GLOB SOURCES src/*.c)
+include_directories(include)
+
+add_executable(tempH temp_humid.c ${SOURCES})
+
 pico_enable_stdio_usb(tempH 1)
 pico_enable_stdio_uart(tempH 1)
 pico_add_extra_outputs(tempH)
