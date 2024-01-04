@@ -1,17 +1,21 @@
-from flask import Flask, request, jsonify
-#from pymongo import MongoClient
+import socket
 
-app = Flask(__name__)
+SERVER_IP = "0.0.0.0"
+SERVER_PORT = 5000
 
-@app.route('/send_data', methods=['POST'])
-def receive_data():
-    data = request.get_json()
+def start_udp_server():
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as udp_socket:
+        server_address = (SERVER_IP, SERVER_PORT)
+        try:
+            udp_socket.bind(server_address)
+        except Exception as e:
+            print(f"Error binding UDP socket: {e}")
 
-    # Insert data into MongoDB
-    #collection.insert_one(data)
-    print(data)
+        print(f"UDP server listening on {SERVER_IP}:{SERVER_PORT}")
 
-    return jsonify({"status": "Data received and stored in MongoDB"})
+        while True:
+            data, client_address = udp_socket.recvfrom(1024)
+            print(f"Received data from {client_address}: {data.decode('utf-8')}")
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    start_udp_server()
