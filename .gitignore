@@ -1,2 +1,4 @@
 pico-sdk/
 picotool/
+
+**/build/
