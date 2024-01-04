@@ -2,3 +2,4 @@ pico-sdk/
 picotool/
 
 **/build/
+**/Constants.h
