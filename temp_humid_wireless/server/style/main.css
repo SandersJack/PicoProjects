@@ -1,0 +1,19 @@
+body {
+    font-family: 'Arial, sans-serif';
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#data-dropdown {
+    width: 50%;
+    margin-bottom: 20px;
+}
+
+#temperature-humidity-plot {
+    margin: auto;
+    max-width: 800px;
+    margin-top: 20px;
+}
