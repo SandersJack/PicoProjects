@@ -1,0 +1,36 @@
+version: '3'
+services:
+  udp-server:
+    build:
+      context: ./udp-server  # Path to your UDP server Dockerfile and source code
+    ports:
+      - "5000:5000/udp" 
+    networks:
+      - my_network
+    volumes:
+      - ./data:/app/data  # Mount the database volume for the UDP server
+    depends_on:
+      - database
+
+  database:
+    image: alpine:latest
+    command: tail -f /dev/null  # Keep the container running
+    volumes:
+      - ./data:/data
+    networks:
+      - my_network
+
+  dashboard:
+    build:
+      context: ./dashboard 
+    ports:
+      - "5050:5050" 
+    networks:
+      - my_network
+    depends_on:
+      - database
+    volumes:
+      - ./data:/app/data  # Mount the database volume for the dashboard
+
+networks:
+  my_network:

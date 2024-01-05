@@ -8,7 +8,7 @@ from dash import callback, no_update
 
 # Function to fetch data from the SQLite database
 def fetch_data():
-    conn = sqlite3.connect('sensor_data.db')
+    conn = sqlite3.connect('data/sensor_data.db')
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM sensor_data')
     rows = cursor.fetchall()
@@ -83,4 +83,4 @@ def update_plot(selected_data, n_intervals):
 
 # Run the app
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(host='0.0.0.0', port=5050)

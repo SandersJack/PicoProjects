@@ -1,7 +1,7 @@
 import sqlite3
 
 def print_all_data():
-    conn = sqlite3.connect('sensor_data.db')
+    conn = sqlite3.connect('data/sensor_data.db')
     cursor = conn.cursor()
 
     # Select all rows from the sensor_data table

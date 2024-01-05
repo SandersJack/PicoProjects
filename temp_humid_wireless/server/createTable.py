@@ -1,7 +1,7 @@
 import sqlite3
 
 def create_database():
-    conn = sqlite3.connect('sensor_data.db')
+    conn = sqlite3.connect('data/sensor_data.db')
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS sensor_data (

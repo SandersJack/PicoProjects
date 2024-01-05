@@ -6,7 +6,7 @@ SERVER_IP = "0.0.0.0"
 SERVER_PORT = 5000
 
 def save_data_to_database(temperature, humidity):
-    conn = sqlite3.connect('sensor_data.db')
+    conn = sqlite3.connect('data/sensor_data.db')
     cursor = conn.cursor()
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     cursor.execute('INSERT INTO sensor_data (temperature, humidity, timestamp) VALUES (?, ?, ?)',
