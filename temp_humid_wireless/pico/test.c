@@ -82,7 +82,7 @@ int main(){
 
     printf("Start of Loop\n");
     while (1){
-        sleep_ms(2000);
+        sleep_ms(60000);
         int out = read_from_dht(&reading);
         if(out == 0){
             float temp = reading.temp_celsius;
