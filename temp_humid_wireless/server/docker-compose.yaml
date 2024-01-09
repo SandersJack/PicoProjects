@@ -23,14 +23,34 @@ services:
   dashboard:
     build:
       context: ./dashboard 
-    ports:
-      - "5050:5050" 
+    #ports:
+    #  - "5050:5050" 
+    security_opt:
+      - no-new-privileges:true
     networks:
       - my_network
+      - proxy
     depends_on:
       - database
     volumes:
       - ./data:/app/data  # Mount the database volume for the dashboard
 
+    labels:
+      - "traefik.enable=true"
+      #- "traefik.http.routers.portainer.entrypoints=http"
+      - "traefik.http.routers.dashboard.rule=Host(`temperature.local.jack-sanders.uk`)"
+      - "traefik.http.middlewares.dashboard-https-redirect.redirectscheme.scheme=https"
+      #- "traefik.http.routers.portainer.middlewares=portainer-https-redirect"
+      - "traefik.http.routers.dashboard-secure.entrypoints=https"
+      - "traefik.http.routers.dashboard-secure.rule=Host(`temperature.local.jack-sanders.uk`)"
+      - "traefik.http.routers.dashboard-secure.tls=true"
+      - "traefik.http.routers.dashboard-secure.service=dashboard"
+      - "traefik.http.services.dashboard.loadbalancer.server.port=5050"
+      - "traefik.docker.network=proxy"
+
+
 networks:
   my_network:
+
+  proxy:
+  external: true
