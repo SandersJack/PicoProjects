@@ -1,4 +1,5 @@
 ansi2html==1.9.1
+bcrypt==4.1.2
 blinker==1.7.0
 certifi==2023.11.17
 charset-normalizer==3.3.2
@@ -8,6 +9,9 @@ dash-core-components==2.0.0
 dash-html-components==2.0.0
 dash-table==5.0.0
 Flask==3.0.0
+Flask-Bcrypt==1.0.1
+Flask-Login==0.6.3
+gunicorn==21.2.0
 idna==3.6
 importlib-metadata==7.0.1
 itsdangerous==2.1.2

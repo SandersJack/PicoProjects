@@ -5,6 +5,14 @@ import plotly.express as px
 import pandas as pd
 import sqlite3
 from dash import callback, no_update
+from flask_login import current_user
+import plotly.graph_objs as go
+from utils.login_handler import require_login
+
+dash.register_page(__name__)
+require_login(__name__)
+
+dark_template = "plotly_dark"
 
 # Function to fetch data from the SQLite database
 def fetch_data():
@@ -19,38 +27,36 @@ def fetch_data():
     df = pd.DataFrame(rows, columns=columns)
     return df
 
-# Initialize the Dash app
-app = dash.Dash(__name__, external_stylesheets=['style/main.css'])
+def layout():
+    layout = html.Div(
+        children=[
+            html.H1("Sensor Data Dashboard"),
+            
+            # Dropdown to select temperature or humidity
+            dcc.Dropdown(
+                id='data-dropdown',
+                options=[
+                    {'label': 'Temperature', 'value': 'Temperature'},
+                    {'label': 'Humidity', 'value': 'Humidity'}
+                ],
+                value='Temperature', className='dark-dropdown',
+            ),
 
-# Define the layout of the app
-app.layout = html.Div(
-    children=[
-        html.H1("Sensor Data Dashboard"),
-        
-        # Dropdown to select temperature or humidity
-        dcc.Dropdown(
-            id='data-dropdown',
-            options=[
-                {'label': 'Temperature', 'value': 'Temperature'},
-                {'label': 'Humidity', 'value': 'Humidity'}
-            ],
-            value='Temperature'
-        ),
+            # Graph to display temperature and humidity
+            dcc.Graph(id='temperature-humidity-plot'),
 
-        # Graph to display temperature and humidity
-        dcc.Graph(id='temperature-humidity-plot'),
-
-        # Interval component for auto-updating every 1 minute (60000 milliseconds)
-        dcc.Interval(
-            id='interval-component',
-            interval=60000,  # in milliseconds
-            n_intervals=0
-        )
-    ],
-)
+            # Interval component for auto-updating every 1 minute (60000 milliseconds)
+            dcc.Interval(
+                id='interval-component',
+                interval=60000,  # in milliseconds
+                n_intervals=0
+            )
+        ]
+    )
+    return layout
 
 # Define callback to update the graph based on dropdown selection
-@app.callback(
+@callback(
     Output('temperature-humidity-plot', 'figure'),
     [Input('data-dropdown', 'value'),
      Input('interval-component', 'n_intervals')]
@@ -68,7 +74,7 @@ def update_plot(selected_data, n_intervals):
         labels={'Timestamp': 'Time', selected_data: selected_data},
         template='plotly',
         color_discrete_sequence=['blue']
-    )
+    ).update_layout(template=dark_template)
 
     fig.update_layout(
         title={'text': f'{selected_data} Over Time', 'x': 0.5},
@@ -80,7 +86,3 @@ def update_plot(selected_data, n_intervals):
     )
 
     return fig
-
-# Run the app
-if __name__ == '__main__':
-    app.run_server(host='0.0.0.0', port=5050)

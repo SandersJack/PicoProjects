@@ -1,0 +1,11 @@
+.dark-dropdown .Select-menu-outer {
+    background-color: #2c3e50;  /* Dropdown menu background color */
+}
+
+.dark-dropdown .Select-option {
+    color: #ffffff;  /* Option text color */
+}
+
+.dark-dropdown .Select-option:hover {
+    background-color: #34495e;  /* Hover color for options */
+}
