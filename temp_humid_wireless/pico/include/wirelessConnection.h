@@ -11,6 +11,7 @@ typedef struct
     char pass[20];
 } wirelessConnection ;
 
+int init_wifi();
 int connect(wirelessConnection *input);
 void send_data_to_server(const char *data);
 

@@ -6,3 +6,8 @@ picotool/
 
 **/.venv/
 **.db
+
+**/__pycache__/
+**/Constants.py
+
+.vscode

@@ -75,20 +75,26 @@ int main(){
     wirelessConnection setup;
     strcpy(setup.ssid, W_SSID);
     strcpy(setup.pass, W_PASS);
-
-    while(connect(&setup) != 0);
+    init_wifi();
+    connect(&setup);
 
     dht_reading reading = dht_init(DHT_PIN);
 
     printf("Start of Loop\n");
     while (1){
-        sleep_ms(60000);
+        sleep_ms(30000);
+        if(cyw43_tcpip_link_status(&cyw43_state, CYW43_ITF_STA) == CYW43_LINK_UP){
+            printf("Still Connected!\n");
+        } else {
+            printf("Trying to reconnect\n");
+            connect(&setup);
+            continue;
+        }
         int out = read_from_dht(&reading);
         if(out == 0){
             float temp = reading.temp_celsius;
             float humid = reading.humidity;
             printf("Humidity = %.1f%%, Temperature = %.1fC \n", humid, temp);
-
             // Create a string with the sensor data
             char data_to_send[128];
             snprintf(data_to_send, sizeof(data_to_send), "temperature=%.2f&humidity=%.2f", temp, humid);
