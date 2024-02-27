@@ -5,6 +5,7 @@ services:
       context: ./udp-server  # Path to your UDP server Dockerfile and source code
     ports:
       - "5000:5000/udp" 
+    restart: always
     networks:
       - my_network
     volumes:
@@ -15,6 +16,7 @@ services:
   database:
     image: alpine:latest
     command: tail -f /dev/null  # Keep the container running
+    restart: always
     volumes:
       - ./data:/data
     networks:
@@ -24,7 +26,8 @@ services:
     build:
       context: ./dashboard 
     #ports:
-    #  - "5050:5050" 
+    #  - "5050:5050
+    restart: always 
     security_opt:
       - no-new-privileges:true
     networks:
@@ -53,4 +56,4 @@ networks:
   my_network:
 
   proxy:
-  external: true
+    external: true
