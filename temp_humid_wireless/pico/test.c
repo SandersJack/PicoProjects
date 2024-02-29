@@ -65,12 +65,11 @@ void send_udp_data(const char *data) {
     udp_remove(udp_conn);
 }
 
-
 int main(){
 
     stdio_init_all();
 
-    printf("Startup\n");
+    //printf("Startup\n");
 
     wirelessConnection setup;
     strcpy(setup.ssid, W_SSID);
@@ -80,9 +79,10 @@ int main(){
 
     dht_reading reading = dht_init(DHT_PIN);
 
-    printf("Start of Loop\n");
+    //printf("Start of Loop\n");
     while (1){
-        sleep_ms(30000);
+        sleep_ms(3000);
+        
         if(cyw43_tcpip_link_status(&cyw43_state, CYW43_ITF_STA) == CYW43_LINK_UP){
             printf("Still Connected!\n");
         } else {
@@ -98,16 +98,15 @@ int main(){
             // Create a string with the sensor data
             char data_to_send[128];
             snprintf(data_to_send, sizeof(data_to_send), "temperature=%.2f&humidity=%.2f", temp, humid);
-            printf("\n");
+            //printf("\n");
             // Send data over UDP
             send_udp_data(data_to_send);
 
         } else if(out == 10){
-            printf("Bad data (checksum)\n");
+            //printf("Bad data (checksum)\n");
         } else {
-            printf("Bad data (NaN)\n");
+            //printf("Bad data (NaN)\n");
         }
-
     }
     
 }

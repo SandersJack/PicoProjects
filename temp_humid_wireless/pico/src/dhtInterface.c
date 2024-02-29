@@ -3,8 +3,11 @@
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
 #include <math.h>
+#include <stdio.h>
 
 static const uint LED_PIN = 0;
+
+#define TIMEOUT_SECONDS 5
 
 
 dht_reading dht_init(uint8_t pin) {
@@ -18,10 +21,14 @@ dht_reading dht_init(uint8_t pin) {
     return dht;
 }
 
-static float wait_for(uint8_t pin, uint8_t expect) {
+static float wait_for(uint8_t pin, uint8_t expect, uint32_t timeout_us) {
     uint32_t then = time_us_32();
     while (expect != gpio_get(pin)) {
         sleep_us(10);
+        if ((time_us_32() - then) > timeout_us) {
+            // Timeout reached, break out of the loop
+            return -1.0f;
+        }
     }
     return time_us_32() - then;
 }
@@ -41,17 +48,18 @@ int read_from_dht(dht_reading *result){
 
 
     gpio_set_dir(result->pin, GPIO_IN);
-    wait_for(result->pin,0);
-    wait_for(result->pin,1);
-    wait_for(result->pin,0);
+    wait_for(result->pin,0,3e6);
+    wait_for(result->pin,1,3e6);
+    wait_for(result->pin,0,3e6);
 
 
     gpio_put(LED_PIN, 1);
 
     // read sample (40 bits = 5 bytes)
     for (uint8_t bit = 0; bit < 40; ++bit) {
-        wait_for(result->pin, 1);
-        uint8_t count = wait_for(result->pin, 0);
+        wait_for(result->pin, 1, 1e6);
+        uint8_t count = wait_for(result->pin, 0,1e6);
+        if(count < 0) return DHT_ERR_NAN;
         data[bit / 8] <<= 1;
         if (count > 50) {
             data[bit / 8] |= 1;
@@ -61,7 +69,6 @@ int read_from_dht(dht_reading *result){
     gpio_put(result->pin, 1);
 
     gpio_put(LED_PIN, 0);
-
 
     if (data[4] == ((data[0] + data[1] + data[2] + data[3]) & 0xFF)) {
         float humidity = word(data[0], data[1]) / 10;
