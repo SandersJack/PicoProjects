@@ -13,7 +13,6 @@ typedef struct
 
 int init_wifi();
 int connect(wirelessConnection *input);
-void send_data_to_server(const char *data);
 
 //void send_udp_data(const char *data);
 
